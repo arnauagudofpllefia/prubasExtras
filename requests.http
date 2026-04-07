@@ -1,0 +1,144 @@
+### BASE URL
+@baseUrl = http://localhost:3001
+
+### ================================
+### PETICIONES DE AUTENTICACIÓN
+### ================================
+
+### POST - Registro de nuevo usuario
+POST {{baseUrl}}/api/auth/registro
+Content-Type: application/json
+
+{
+  "email": "frank@test.com",
+  "password": "password123",
+  "rol": "admin"
+}
+
+### POST - Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "frank@test.com",
+  "password": "password123"
+}
+
+### GET - Ver perfil (requiere token)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YTczNDZlYTI4MDhmYjZmMDI1NzM3MSIsImlhdCI6MTc3MjU2NTY4NywiZXhwIjoxNzczMTcwNDg3fQ.6NP6j8Bn1P5-GnXDjsBuCHKcJsM_YyHgq6DrWpTN3rY
+GET {{baseUrl}}/api/auth/perfil
+Authorization: Bearer {{token}}
+
+### PUT - Actualizar perfil (requiere token)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWRmMGM1YWNhNDU2M2NhOTdiNmViNyIsImlhdCI6MTc3MTk1OTM3NSwiZXhwIjoxNzcyNTY0MTc1fQ.eEdBvBh5EkkamZUFUPy1AdqNZ4bbq-qfeML07fPr67g
+PUT {{baseUrl}}/api/auth/perfil
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "email": "gitano@test.com",
+  "password": "nuevopassword456"
+}
+
+### ================================
+### PETICIONES DE CERVEZAS
+### ================================
+
+### GET - Obtener todas las cervezas
+GET {{baseUrl}}/api/cervezas
+
+### POST - Crear nueva cerveza
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWRmMGM1YWNhNDU2M2NhOTdiNmViNyIsImlhdCI6MTc3MTk1OTM3NSwiZXhwIjoxNzcyNTY0MTc1fQ.eEdBvBh5EkkamZUFUPy1AdqNZ4bbq-qfeML07fPr67g
+POST {{baseUrl}}/api/cervezas
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Corona",
+  "precio": 3.50
+}
+
+### POST - Crear otra cerveza
+POST {{baseUrl}}/api/cervezas
+Content-Type: application/json
+
+{
+  "nombre": "cerveza sin alcohol",
+  "precio": 4.00
+}
+
+### POST - Crear otra cerveza más
+POST {{baseUrl}}/api/cervezas
+Content-Type: application/json
+
+{
+  "nombre": "Mahou",
+  "precio": 2.50
+}
+
+### GET - Obtener cerveza por ID (cambiar el ID)
+GET {{baseUrl}}/api/cervezas/699ca77ddb89f4f45d5e941d
+Authorization: Bearer {{token}}
+
+### PUT - Actualizar cerveza (cambiar el ID)
+PUT {{baseUrl}}/api/cervezas/65f1234567890abcdef12345
+Content-Type: application/json
+
+{
+  "nombre": "Corona actualizada",
+  "precio": 4.50
+}
+
+### DELETE - Eliminar cerveza (cambiar el ID)
+DELETE {{baseUrl}}/api/cervezas/65f1234567890abcdef12345
+
+### ================================
+### PETICIONES DE VINOS
+### ================================
+
+### GET - Obtener todos los vinos
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWRmMGM1YWNhNDU2M2NhOTdiNmViNyIsImlhdCI6MTc3MTk1OTM3NSwiZXhwIjoxNzcyNTY0MTc1fQ.eEdBvBh5EkkamZUFUPy1AdqNZ4bbq-qfeML07fPr67g
+GET {{baseUrl}}/api/vinos
+Authorization: Bearer {{token}}
+
+### POST - Crear nuevo vino
+POST {{baseUrl}}/api/vinos
+Content-Type: application/json
+
+{
+  "nombre": "Vino Tinto Reserva",
+  "precio": 15.50
+}
+
+### POST - Crear otro vino
+POST {{baseUrl}}/api/vinos
+Content-Type: application/json
+
+{
+  "nombre": "Vino Blanco Fresco",
+  "precio": 12.00
+}
+
+### POST - Crear otro vino más
+POST {{baseUrl}}/api/vinos
+Content-Type: application/json
+
+{
+  "nombre": "Vino Rosado",
+  "precio": 10.50
+}
+
+### GET - Obtener vino por ID (cambiar el ID)
+GET {{baseUrl}}/api/vinos/699cab32e333845655744287
+
+### PUT - Actualizar vino (cambiar el ID)
+PUT {{baseUrl}}/api/vinos/699cab32e333845655744287
+Content-Type: application/json
+
+{
+  "nombre": "Vino Tinto Premium",
+  "precio": 18.00
+}
+
+### DELETE - Eliminar vino (cambiar el ID)
+DELETE {{baseUrl}}/api/vinos/699cab32e333845655744287
