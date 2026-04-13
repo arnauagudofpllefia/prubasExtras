@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 // Importar el model Usuario per consultar i crear usuaris a la BD
 import Usuario from '../models/UsuarioModel.js';
 // Importar el middleware de protecció per a la ruta de perfil
-import { protegir } from '../middlewares/authMiddleware.js';
+import { protegir, autoritzar } from '../middlewares/authMiddleware.js';
 
 // Crear un router d'Express; les rutes es muntaran sota /api/auth
 const router = express.Router();
@@ -25,8 +25,8 @@ router.post('/registro', async (req, res) => {
     if (existent) {
       return res.status(400).json({ error: 'Aquest email ja està registrat' });
     }
-    // Crear el nou usuari; el middleware pre('save') hasheja la contrasenya abans de guardar
-    const usuari = await Usuario.create({ email, password });
+    // Crear el nou usuari sempre amb rol bàsic; no es permet autoassignar-se admin al registre
+    const usuari = await Usuario.create({ email, password, rol: 'usuari' });
     // Generar el JWT: payload amb l'id de l'usuari, signat amb JWT_SECRET, vàlid 7 dies
     const token = jwt.sign(
       { id: usuari._id },           // payload: dades que viatjaran dins del token
@@ -105,6 +105,39 @@ router.put('/perfil', protegir, async (req, res) => {
       { expiresIn: '7d' }
     );
     res.json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol } });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PATCH /api/auth/usuaris/:id/rol — canviar el rol d'un usuari (només admin)
+router.patch('/usuaris/:id/rol', protegir, autoritzar('admin'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rol } = req.body;
+
+    if (!['usuari', 'admin'].includes(rol)) {
+      return res.status(400).json({ error: 'Rol no vàlid. Usa "usuari" o "admin"' });
+    }
+
+    const usuariActualitzat = await Usuario.findByIdAndUpdate(
+      id,
+      { rol },
+      { new: true, runValidators: true }
+    );
+
+    if (!usuariActualitzat) {
+      return res.status(404).json({ error: 'Usuari no trobat' });
+    }
+
+    res.json({
+      missatge: 'Rol actualitzat correctament',
+      usuari: {
+        id: usuariActualitzat._id,
+        email: usuariActualitzat.email,
+        rol: usuariActualitzat.rol
+      }
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

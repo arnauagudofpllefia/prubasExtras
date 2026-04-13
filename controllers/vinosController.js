@@ -23,10 +23,13 @@ export async function getVinosById(req, res) {
 
 export async function createVino(req, res) {
     try {
-        const { nombre, precio } = req.body;       
+        const { nombre, precio, graduacion, tipo, descripcion } = req.body;
         const nuevoVino = new Vino({
             nombre,
-            precio
+            precio,
+            graduacion,
+            tipo,
+            descripcion
         });
         
         await nuevoVino.save();
@@ -39,11 +42,11 @@ export async function createVino(req, res) {
 export async function updateVino(req, res) {
     try {
         const { id } = req.params;
-        const { nombre, precio } = req.body;
+        const { nombre, precio, graduacion, tipo, descripcion } = req.body;
         
         const vinoActualizado = await Vino.findByIdAndUpdate(
             id,
-            { nombre, precio },
+            { nombre, precio, graduacion, tipo, descripcion },
             { new: true, runValidators: true }
         );
 

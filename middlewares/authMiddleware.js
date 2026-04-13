@@ -5,7 +5,7 @@ import Usuario from '../models/UsuarioModel.js';
 const protegir = async (req, res, next) => {
   let token = null;
   // Llegir token de l'header Authorization: "Bearer <token>"
-  if (req.headers.authorization?.startsWith('Bearer')) {
+  if (req.headers.authorization?.startsWith('Bearer ')) {
     token = req.headers.authorization.split(' ')[1];
   }
   if (!token) {

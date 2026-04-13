@@ -1,11 +1,13 @@
 import express from 'express';
 import { protegir, autoritzar } from '../middlewares/authMiddleware.js';
+import upload from '../config/multer.js';
 import {
   getCervezas,
   getCervezaById,
   createCerveza,
   updateCerveza,
-  deleteCerveza
+  deleteCerveza,
+  updateCervezaWithImage
 } from '../controllers/cervezasController.js';
 
 const router = express.Router();
@@ -21,5 +23,6 @@ router.get('/:id', getCervezaById);
 router.post('/', autoritzar('admin'), createCerveza);
 router.put('/:id', autoritzar('admin'), updateCerveza);
 router.delete('/:id', autoritzar('admin'), deleteCerveza);
+router.patch('/:id/imatge', autoritzar('admin'), upload.single('imatge'), updateCervezaWithImage);
 
 export default router;
