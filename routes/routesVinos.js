@@ -1,22 +1,25 @@
 import express from 'express';
-import { 
-    getVinosAll, 
-    getVinosById, 
-    createVino, 
-    updateVino, 
-    deleteVino 
+import { protegir, autoritzar } from '../middlewares/authMiddleware.js';
+import {
+    getVinosAll,
+    getVinosById,
+    createVino,
+    updateVino,
+    deleteVino
 } from "../controllers/vinosController.js";
 
 const routerVino = express.Router();
 
+// Primer middleware: totes les rutes requereixen token vàlid (req.usuari definit)
+routerVino.use(protegir);
+
+// Rutes de lectura: qualsevol usuari autenticat (rol usuari o admin) pot accedir
 routerVino.get("/", getVinosAll);
-
-routerVino.post("/", createVino);
-
 routerVino.get("/:id", getVinosById);
 
-routerVino.put("/:id", updateVino);
-
-routerVino.delete("/:id", deleteVino);
+// Rutes d'escriptura: només rol 'admin'; autoritzar('admin') comprova req.usuari.rol abans del controlador
+routerVino.post("/", autoritzar('admin'), createVino);
+routerVino.put("/:id", autoritzar('admin'), updateVino);
+routerVino.delete("/:id", autoritzar('admin'), deleteVino);
 
 export default routerVino;

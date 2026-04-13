@@ -10,7 +10,7 @@ POST {{baseUrl}}/api/auth/registro
 Content-Type: application/json
 
 {
-  "email": "frank@test.com",
+  "email": "arnau@test.com",
   "password": "password123",
   "rol": "admin"
 }
@@ -20,12 +20,12 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "frank@test.com",
+  "email": "arnau@test.com",
   "password": "password123"
 }
 
 ### GET - Ver perfil (requiere token)
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YTczNDZlYTI4MDhmYjZmMDI1NzM3MSIsImlhdCI6MTc3MjU2NTY4NywiZXhwIjoxNzczMTcwNDg3fQ.6NP6j8Bn1P5-GnXDjsBuCHKcJsM_YyHgq6DrWpTN3rY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGNiZjU5YjYwOTkxYmJmOGI1Zjk3YyIsImlhdCI6MTc3NjA3NTI1NSwiZXhwIjoxNzc2NjgwMDU1fQ.0DbRVSOLbe-vQ1-XxkG2rF0K0uvKZM-om0kXMQhHkuE
 GET {{baseUrl}}/api/auth/perfil
 Authorization: Bearer {{token}}
 
@@ -48,10 +48,10 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/cervezas
 
 ### POST - Crear nueva cerveza
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWRmMGM1YWNhNDU2M2NhOTdiNmViNyIsImlhdCI6MTc3MTk1OTM3NSwiZXhwIjoxNzcyNTY0MTc1fQ.eEdBvBh5EkkamZUFUPy1AdqNZ4bbq-qfeML07fPr67g
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGNiZjU5YjYwOTkxYmJmOGI1Zjk3YyIsImlhdCI6MTc3NjA3NTI1NSwiZXhwIjoxNzc2NjgwMDU1fQ.0DbRVSOLbe-vQ1-XxkG2rF0K0uvKZM-om0kXMQhHkuE
 POST {{baseUrl}}/api/cervezas
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearser {{token}}
 
 {
   "nombre": "Corona",
