@@ -1,6 +1,6 @@
 ### BASE URL
 @baseUrl = http://localhost:3001
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2E0ODAxNzk4OTczMDBlNTZiZiIsImlhdCI6MTc3NjA5NjM4MiwiZXhwIjoxNzc2NzAxMTgyfQ.XgyK_af2dbZalaCC3qlZ99E2v-DowZzS9uD_j0zJoiQ
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2E0ODAxNzk4OTczMDBlNTZiZiIsImlhdCI6MTc3NjE1NzEyNywiZXhwIjoxNzc2NzYxOTI3fQ.yLJrL94pzQG3h9wZQ1aRtHh0nAwnJiWD3z0_1RNofUo
 @userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2MxMmU5MmFmMTdhMTExZmU1YSIsImlhdCI6MTc3NjA5NjMwMSwiZXhwIjoxNzc2NzAxMTAxfQ.pBxjYmnccL5vFifIeaXALVb4-BmHUHreY0xm7tsif4I
 @userId = REEMPLAZA_CON_ID_USUARIO
 @cervezaId = REEMPLAZA_CON_ID_CERVEZA
@@ -238,35 +238,34 @@ GET {{baseUrl}}/uploads/{{uploadedImage}}
 ### PETICIONES DE VINOS
 ### ================================
 
-### GET - Obtener todos los vinos (solo admin)
+### GET - Obtener todos los vinos 
 GET {{baseUrl}}/api/vinos
-Authorization: Bearer {{adminToken}}
 
-### POST - Crear nuevo vino con usuario normal -> 403
+### POST - Crear nuevo vino (admin)
 POST {{baseUrl}}/api/vinos
 Content-Type: multipart/form-data; boundary=----AstroBoundary
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 
 ------AstroBoundary
 Content-Disposition: form-data; name="nombre"
 
-Vino Tinto Reserva
+Vino Blanco Fresco
 ------AstroBoundary
 Content-Disposition: form-data; name="precio"
 
-15.50
+10.50
 ------AstroBoundary
 Content-Disposition: form-data; name="graduacion"
 
-13.5
+10.5
 ------AstroBoundary
 Content-Disposition: form-data; name="tipo"
 
-Tinto
+Blanco
 ------AstroBoundary
 Content-Disposition: form-data; name="descripcion"
 
-Reserva con notas de roble
+Vino afrutado ideal para pescado
 ------AstroBoundary
 Content-Disposition: form-data; name="imatge"; filename="vino-reserva.jpg"
 Content-Type: image/jpeg
@@ -282,7 +281,7 @@ Authorization: Bearer {{adminToken}}
 ------AstroBoundary
 Content-Disposition: form-data; name="nombre"
 
-Vino Blanco Fresco
+Vino Blanco Afrutado
 ------AstroBoundary
 Content-Disposition: form-data; name="precio"
 
@@ -310,9 +309,9 @@ Content-Type: image/jpeg
 GET {{baseUrl}}/api/vinos/ID_VINO
 Authorization: Bearer {{adminToken}}
 
-### GET - Obtener vino por ID con token usuario -> 403
+### GET - Obtener vino por ID (admin)
 GET {{baseUrl}}/api/vinos/ID_VINO
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 
 ### PUT - Actualizar vino (cambiar el ID)
 PUT {{baseUrl}}/api/vinos/ID_VINO
@@ -400,9 +399,9 @@ Authorization: Bearer {{userToken}}
 GET {{baseUrl}}/api/comandes/me
 Authorization: Bearer {{userToken}}
 
-### PATCH - Subir imagen de vino con token usuario -> 403
+### PATCH - Subir imagen de vino (admin)
 PATCH {{baseUrl}}/api/vinos/{{vinoId}}/imatge
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 Content-Type: multipart/form-data; boundary=----AstroBoundary
 
 ------AstroBoundary

@@ -12,12 +12,12 @@ import {
 
 const routerVino = express.Router();
 
-// Primer middleware: totes les rutes requereixen token vàlid (req.usuari definit)
+// Llistar vins és públic
+routerVino.get("/", getVinosAll);
+
+// La resta del CRUD és només per admin autenticat
 routerVino.use(protegir);
 routerVino.use(autoritzar('admin'));
-
-// CRUD complet: només rol 'admin'
-routerVino.get("/", getVinosAll);
 routerVino.get("/:id", getVinosById);
 
 routerVino.post("/", upload.single('imatge'), createVino);
