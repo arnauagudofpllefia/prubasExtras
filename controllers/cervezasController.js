@@ -85,7 +85,7 @@ export async function updateCervezaWithImage(req, res) {
         );
 
         if (!actualitzada) {
-            return res.status(404).json({ error: 'Cervesa no trobada' });
+            return res.status(404).json({ error: 'Cerveza no encontrada' });
         }
 
         res.json({ mensaje: 'Imagen de cerveza actualizada', cerveza: actualitzada });
