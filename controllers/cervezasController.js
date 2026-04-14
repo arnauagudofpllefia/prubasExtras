@@ -23,15 +23,20 @@ export async function getCervezaById(req, res) {
 
 export async function createCerveza(req, res) {
     try {
+        if (!req.file) {
+            return res.status(400).json({ error: "La imagen es obligatoria" });
+        }
+
         const { nombre, precio, graduacion, tipo, descripcion } = req.body;
         const nuevaCerveza = new Cerveza({
             nombre,
             precio,
             graduacion,
             tipo,
-            descripcion
+            descripcion,
+            imatge: `/uploads/${req.file.filename}`
         });
-        
+
         await nuevaCerveza.save();
         res.status(201).json({ mensaje: "Cerveza creada", cerveza: nuevaCerveza });
     } catch (error) {
@@ -43,7 +48,7 @@ export async function updateCerveza(req, res) {
     try {
         const { id } = req.params;
         const { nombre, precio, graduacion, tipo, descripcion } = req.body;
-        
+
         const cervezaActualizada = await Cerveza.findByIdAndUpdate(
             id,
             { nombre, precio, graduacion, tipo, descripcion },
@@ -71,7 +76,7 @@ export async function updateCervezaWithImage(req, res) {
             return res.status(400).json({ error: 'Cap fitxer pujat' });
         }
 
-        const pathImatge = 'uploads/' + req.file.filename;
+        const pathImatge = `/uploads/${req.file.filename}`;
 
         const actualitzada = await Cerveza.findByIdAndUpdate(
             req.params.id,

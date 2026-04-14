@@ -17,8 +17,12 @@ const usuarioSchema = new mongoose.Schema({
   },
   rol: {
     type: String,
-    enum: ['usuari', 'admin'],
+    enum: ['usuari', 'editor', 'admin'],
     default: 'usuari'
+  },
+  imatge: {
+    type: String,
+    trim: true
   }
 }, { timestamps: true });
 

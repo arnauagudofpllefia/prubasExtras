@@ -1,25 +1,28 @@
 import express from 'express';
 import { protegir, autoritzar } from '../middlewares/authMiddleware.js';
+import upload from '../config/multer.js';
 import {
     getVinosAll,
     getVinosById,
     createVino,
     updateVino,
-    deleteVino
+    deleteVino,
+    updateVinoWithImage
 } from "../controllers/vinosController.js";
 
 const routerVino = express.Router();
 
 // Primer middleware: totes les rutes requereixen token vàlid (req.usuari definit)
 routerVino.use(protegir);
+routerVino.use(autoritzar('admin'));
 
-// Rutes de lectura: qualsevol usuari autenticat (rol usuari o admin) pot accedir
+// CRUD complet: només rol 'admin'
 routerVino.get("/", getVinosAll);
 routerVino.get("/:id", getVinosById);
 
-// Rutes d'escriptura: només rol 'admin'; autoritzar('admin') comprova req.usuari.rol abans del controlador
-routerVino.post("/", autoritzar('admin'), createVino);
-routerVino.put("/:id", autoritzar('admin'), updateVino);
-routerVino.delete("/:id", autoritzar('admin'), deleteVino);
+routerVino.post("/", upload.single('imatge'), createVino);
+routerVino.put("/:id", updateVino);
+routerVino.delete("/:id", deleteVino);
+routerVino.patch("/:id/imatge", upload.single('imatge'), updateVinoWithImage);
 
 export default routerVino;

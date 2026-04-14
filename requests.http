@@ -4,29 +4,50 @@
 @userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2MxMmU5MmFmMTdhMTExZmU1YSIsImlhdCI6MTc3NjA5NjMwMSwiZXhwIjoxNzc2NzAxMTAxfQ.pBxjYmnccL5vFifIeaXALVb4-BmHUHreY0xm7tsif4I
 @userId = REEMPLAZA_CON_ID_USUARIO
 @cervezaId = REEMPLAZA_CON_ID_CERVEZA
+@vinoId = REEMPLAZA_CON_ID_VINO
 @uploadedImage = REEMPLAZA_CON_NOMBRE_ARCHIVO_SUBIDO.jpg
 
 ### ================================
 ### PETICIONES DE AUTENTICACIÓN
 ### ================================
 
-### POST - Registro de nuevo usuario
+### POST - Registro de nuevo usuario (imagen obligatoria)
 POST {{baseUrl}}/api/auth/registro
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 
-{
-  "email": "usuario@test.com",
-  "password": "password123"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="email"
 
-### POST - Registro de otro usuario
+usuario@test.com
+------AstroBoundary
+Content-Disposition: form-data; name="password"
+
+password123
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="avatar-usuario.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/avatar-usuario.jpg
+------AstroBoundary--
+
+### POST - Registro de otro usuario (imagen obligatoria)
 POST {{baseUrl}}/api/auth/registro
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 
-{
-  "email": "admin@test.com",
-  "password": "password123"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="email"
+
+admin@test.com
+------AstroBoundary
+Content-Disposition: form-data; name="password"
+
+password123
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="avatar-admin.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/avatar-admin.jpg
+------AstroBoundary--
 
 ### POST - Login
 POST {{baseUrl}}/api/auth/login
@@ -66,7 +87,7 @@ Content-Type: application/json
 Authorization: Bearer {{adminToken}}
 
 {
-  "rol": "admin"
+  "rol": "editor"
 }
 
 ### PATCH - Cambiar rol con token de usuario -> 403
@@ -78,42 +99,88 @@ Authorization: Bearer {{userToken}}
   "rol": "admin"
 }
 
+### GET - Listar usuarios autenticados (solo admin) -> 200
+GET {{baseUrl}}/api/auth/usuaris
+Authorization: Bearer {{adminToken}}
+
+### GET - Listar usuarios con token de usuario -> 403
+GET {{baseUrl}}/api/auth/usuaris
+Authorization: Bearer {{userToken}}
+
 ### ================================
 ### PETICIONES DE CERVEZAS
 ### ================================
 
-### GET - Obtener todas las cervezas (autenticado)
+### GET - Obtener todas las cervezas (solo admin)
 GET {{baseUrl}}/api/cervezas
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 
 ### GET - Obtener todas las cervezas sin token -> 401
 GET {{baseUrl}}/api/cervezas
 
 ### POST - Crear cerveza con usuario normal -> 403
 POST {{baseUrl}}/api/cervezas
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 Authorization: Bearer {{userToken}}
 
-{
-  "nombre": "Cerveza sin permiso",
-  "precio": 3.50,
-  "graduacion": 4.8,
-  "tipo": "Lager",
-  "descripcion": "Rubia ligera para consumo diario"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="nombre"
+
+Cerveza sin permiso
+------AstroBoundary
+Content-Disposition: form-data; name="precio"
+
+3.50
+------AstroBoundary
+Content-Disposition: form-data; name="graduacion"
+
+4.8
+------AstroBoundary
+Content-Disposition: form-data; name="tipo"
+
+Lager
+------AstroBoundary
+Content-Disposition: form-data; name="descripcion"
+
+Rubia ligera para consumo diario
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="cerveza.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/cerveza.jpg
+------AstroBoundary--
 
 ### POST - Crear cerveza con admin -> 201
 POST {{baseUrl}}/api/cervezas
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 Authorization: Bearer {{adminToken}}
 
-{
-  "nombre": "Mahou Clásica",
-  "precio": 3.50,
-  "graduacion": 4.6,
-  "tipo": "Lager",
-  "descripcion": "Cerveza suave y refrescante"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="nombre"
+
+Mahou Clasica
+------AstroBoundary
+Content-Disposition: form-data; name="precio"
+
+3.50
+------AstroBoundary
+Content-Disposition: form-data; name="graduacion"
+
+4.6
+------AstroBoundary
+Content-Disposition: form-data; name="tipo"
+
+Lager
+------AstroBoundary
+Content-Disposition: form-data; name="descripcion"
+
+Cerveza suave y refrescante
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="mahou.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/mahou.jpg
+------AstroBoundary--
 
 ### PUT - Actualizar cerveza (solo admin)
 PUT {{baseUrl}}/api/cervezas/ID_CERVEZA
@@ -132,7 +199,11 @@ Authorization: Bearer {{adminToken}}
 DELETE {{baseUrl}}/api/cervezas/ID_CERVEZA
 Authorization: Bearer {{adminToken}}
 
-### GET - Obtener cerveza por ID (cambiar el ID)
+### GET - Obtener cerveza por ID (solo admin, cambiar el ID)
+GET {{baseUrl}}/api/cervezas/ID_CERVEZA
+Authorization: Bearer {{adminToken}}
+
+### GET - Obtener cerveza con token usuario -> 403
 GET {{baseUrl}}/api/cervezas/ID_CERVEZA
 Authorization: Bearer {{userToken}}
 
@@ -167,37 +238,79 @@ GET {{baseUrl}}/uploads/{{uploadedImage}}
 ### PETICIONES DE VINOS
 ### ================================
 
-### GET - Obtener todos los vinos (autenticado)
+### GET - Obtener todos los vinos (solo admin)
 GET {{baseUrl}}/api/vinos
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 
 ### POST - Crear nuevo vino con usuario normal -> 403
 POST {{baseUrl}}/api/vinos
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 Authorization: Bearer {{userToken}}
 
-{
-  "nombre": "Vino Tinto Reserva",
-  "precio": 15.50,
-  "graduacion": 13.5,
-  "tipo": "Tinto",
-  "descripcion": "Reserva con notas de roble"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="nombre"
+
+Vino Tinto Reserva
+------AstroBoundary
+Content-Disposition: form-data; name="precio"
+
+15.50
+------AstroBoundary
+Content-Disposition: form-data; name="graduacion"
+
+13.5
+------AstroBoundary
+Content-Disposition: form-data; name="tipo"
+
+Tinto
+------AstroBoundary
+Content-Disposition: form-data; name="descripcion"
+
+Reserva con notas de roble
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="vino-reserva.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/vino-reserva.jpg
+------AstroBoundary--
 
 ### POST - Crear nuevo vino con admin -> 201
 POST {{baseUrl}}/api/vinos
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----AstroBoundary
 Authorization: Bearer {{adminToken}}
 
-{
-  "nombre": "Vino Blanco Fresco",
-  "precio": 12.00,
-  "graduacion": 11.5,
-  "tipo": "Blanco",
-  "descripcion": "Vino afrutado ideal para pescado"
-}
+------AstroBoundary
+Content-Disposition: form-data; name="nombre"
+
+Vino Blanco Fresco
+------AstroBoundary
+Content-Disposition: form-data; name="precio"
+
+12.00
+------AstroBoundary
+Content-Disposition: form-data; name="graduacion"
+
+11.5
+------AstroBoundary
+Content-Disposition: form-data; name="tipo"
+
+Blanco
+------AstroBoundary
+Content-Disposition: form-data; name="descripcion"
+
+Vino afrutado ideal para pescado
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="vino-blanco.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/vino-blanco.jpg
+------AstroBoundary--
 
 ### GET - Obtener vino por ID (cambiar el ID)
+GET {{baseUrl}}/api/vinos/ID_VINO
+Authorization: Bearer {{adminToken}}
+
+### GET - Obtener vino por ID con token usuario -> 403
 GET {{baseUrl}}/api/vinos/ID_VINO
 Authorization: Bearer {{userToken}}
 
@@ -217,3 +330,84 @@ Authorization: Bearer {{adminToken}}
 ### DELETE - Eliminar vino (cambiar el ID)
 DELETE {{baseUrl}}/api/vinos/ID_VINO
 Authorization: Bearer {{adminToken}}
+
+### PATCH - Subir imagen a vino (solo admin, multipart/form-data)
+PATCH {{baseUrl}}/api/vinos/{{vinoId}}/imatge
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----AstroBoundary
+
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="vino-prova.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/vino-prova.jpg
+------AstroBoundary--
+
+### ================================
+### PETICIONES DE COMANDES
+### ================================
+
+### POST - Crear comanda amb usuari autenticat -> 201
+POST {{baseUrl}}/api/comandes
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [
+    {
+      "tipus": "cerveza",
+      "producteId": "{{cervezaId}}",
+      "quantitat": 2
+    },
+    {
+      "tipus": "vino",
+      "producteId": "{{vinoId}}",
+      "quantitat": 1
+    }
+  ]
+}
+
+### POST - Crear comanda sense token -> 401
+POST {{baseUrl}}/api/comandes
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "tipus": "cerveza",
+      "producteId": "{{cervezaId}}",
+      "quantitat": 1
+    }
+  ]
+}
+
+### POST - Crear comanda amb dades incorrectes -> 400
+POST {{baseUrl}}/api/comandes
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [
+    {
+      "tipus": "cerveza",
+      "producteId": "",
+      "quantitat": 0
+    }
+  ]
+}
+
+### GET - Consultar les meves comandes -> 200
+GET {{baseUrl}}/api/comandes/me
+Authorization: Bearer {{userToken}}
+
+### PATCH - Subir imagen de vino con token usuario -> 403
+PATCH {{baseUrl}}/api/vinos/{{vinoId}}/imatge
+Authorization: Bearer {{userToken}}
+Content-Type: multipart/form-data; boundary=----AstroBoundary
+
+------AstroBoundary
+Content-Disposition: form-data; name="imatge"; filename="vino-prova.jpg"
+Content-Type: image/jpeg
+
+< ./uploads-proves/vino-prova.jpg
+------AstroBoundary--

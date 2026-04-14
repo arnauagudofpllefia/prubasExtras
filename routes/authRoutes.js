@@ -4,20 +4,24 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 // Importar el model Usuario per consultar i crear usuaris a la BD
 import Usuario from '../models/UsuarioModel.js';
+import upload from '../config/multer.js';
 // Importar el middleware de protecció per a la ruta de perfil
 import { protegir, autoritzar } from '../middlewares/authMiddleware.js';
 
 // Crear un router d'Express; les rutes es muntaran sota /api/auth
 const router = express.Router();
 
-// POST /api/auth/registro — crear compte nou; el pre('save') del model hasheja la contrasenya
-router.post('/registro', async (req, res) => {
+// POST /api/auth/registro — crear compte nou amb imatge obligatòria
+router.post('/registro', upload.single('imatge'), async (req, res) => {
   try {
     // Extreure email i contrasenya del cos de la petició (req.body)
     const { email, password } = req.body;
     // Validar que s'han enviat tots dos camps; si no, 400 Bad Request
     if (!email || !password) {
       return res.status(400).json({ error: 'Email i contrasenya requerits' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'La imatge es obligatoria per registrar-se' });
     }
     // Comprovar si ja existeix un usuari amb aquest email a la BD
     const existent = await Usuario.findOne({ email });
@@ -26,7 +30,8 @@ router.post('/registro', async (req, res) => {
       return res.status(400).json({ error: 'Aquest email ja està registrat' });
     }
     // Crear el nou usuari sempre amb rol bàsic; no es permet autoassignar-se admin al registre
-    const usuari = await Usuario.create({ email, password, rol: 'usuari' });
+    const imatge = `/uploads/${req.file.filename}`;
+    const usuari = await Usuario.create({ email, password, rol: 'usuari', imatge });
     // Generar el JWT: payload amb l'id de l'usuari, signat amb JWT_SECRET, vàlid 7 dies
     const token = jwt.sign(
       { id: usuari._id },           // payload: dades que viatjaran dins del token
@@ -34,7 +39,10 @@ router.post('/registro', async (req, res) => {
       { expiresIn: '7d' }          // el token caduca en 7 dies
     );
     // Retornar 201 Created amb el token i les dades públiques de l'usuari (sense password)
-    res.status(201).json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol } });
+    res.status(201).json({
+      token,
+      usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol, imatge: usuari.imatge }
+    });
   } catch (err) {
     // Qualsevol error (p. ex. validació de Mongoose) es respon amb 400
     res.status(400).json({ error: err.message });
@@ -59,7 +67,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
     // Retornar el token i les dades de l'usuari (sense password) en format JSON
-    res.json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol } });
+    res.json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol, imatge: usuari.imatge } });
   } catch (err) {
     // Errors inesperats (BD, etc.) es responen amb 500
     res.status(500).json({ error: err.message });
@@ -70,7 +78,7 @@ router.post('/login', async (req, res) => {
 router.get('/perfil', protegir, async (req, res) => {
   try {
     const usuari = req.usuari;  // usuari carregat pel middleware
-    res.json({ usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol } });
+    res.json({ usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol, imatge: usuari.imatge } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -104,7 +112,7 @@ router.put('/perfil', protegir, async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-    res.json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol } });
+    res.json({ token, usuari: { id: usuari._id, email: usuari.email, rol: usuari.rol, imatge: usuari.imatge } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -116,8 +124,8 @@ router.patch('/usuaris/:id/rol', protegir, autoritzar('admin'), async (req, res)
     const { id } = req.params;
     const { rol } = req.body;
 
-    if (!['usuari', 'admin'].includes(rol)) {
-      return res.status(400).json({ error: 'Rol no vàlid. Usa "usuari" o "admin"' });
+    if (!['usuari', 'editor', 'admin'].includes(rol)) {
+      return res.status(400).json({ error: 'Rol no vàlid. Usa "usuari", "editor" o "admin"' });
     }
 
     const usuariActualitzat = await Usuario.findByIdAndUpdate(
@@ -135,11 +143,22 @@ router.patch('/usuaris/:id/rol', protegir, autoritzar('admin'), async (req, res)
       usuari: {
         id: usuariActualitzat._id,
         email: usuariActualitzat.email,
-        rol: usuariActualitzat.rol
+        rol: usuariActualitzat.rol,
+        imatge: usuariActualitzat.imatge
       }
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+// GET /api/auth/usuaris — llistar usuaris autenticats (només admin)
+router.get('/usuaris', protegir, autoritzar('admin'), async (req, res) => {
+  try {
+    const usuaris = await Usuario.find().select('_id email rol imatge createdAt updatedAt');
+    res.json({ usuaris });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

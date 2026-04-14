@@ -4,8 +4,9 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import routerVino from "./routes/routesVinos.js";
-import {connectDB} from "./config/db.js";
+import { connectDB } from "./config/db.js";
 import authRoutes from './routes/authRoutes.js';
+import routerComandes from './routes/routesComandes.js';
 
 dotenv.config();
 
@@ -24,9 +25,11 @@ app.use("/api/cervezas", router);
 
 app.use("/api/vinos", routerVino);
 
+app.use('/api/comandes', routerComandes);
+
 app.get("/", (req, res) => {
     console.log("Petición GET");
-    
+
 })
 
 
@@ -38,7 +41,7 @@ app.get("/saludo", (req, res) => {
 app.get("/api", (req, res) => {
     res.json({
         mensaje: "Hola desde la API"
-        
+
     });
 });
 

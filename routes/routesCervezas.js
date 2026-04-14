@@ -14,15 +14,15 @@ const router = express.Router();
 
 // Primer middleware: totes les rutes requereixen token vàlid (req.usuari definit)
 router.use(protegir);
+router.use(autoritzar('admin'));
 
-// Rutes de lectura: qualsevol usuari autenticat (rol usuari o admin) pot accedir
+// CRUD complet: només rol 'admin'
 router.get('/', getCervezas);
 router.get('/:id', getCervezaById);
 
-// Rutes d'escriptura: només rol 'admin'; autoritzar('admin') comprova req.usuari.rol abans del controlador
-router.post('/', autoritzar('admin'), createCerveza);
-router.put('/:id', autoritzar('admin'), updateCerveza);
-router.delete('/:id', autoritzar('admin'), deleteCerveza);
-router.patch('/:id/imatge', autoritzar('admin'), upload.single('imatge'), updateCervezaWithImage);
+router.post('/', upload.single('imatge'), createCerveza);
+router.put('/:id', updateCerveza);
+router.delete('/:id', deleteCerveza);
+router.patch('/:id/imatge', upload.single('imatge'), updateCervezaWithImage);
 
 export default router;

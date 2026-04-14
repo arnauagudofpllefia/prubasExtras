@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const vinoSchema = new mongoose.Schema({
-    nombre:{
+    nombre: {
         type: String,
         required: [true, "El nombre es obligatorio"]
     },
-    precio:{
+    precio: {
         type: Number,
         required: [true, "El precio es obligatorio"]
     },
@@ -22,6 +22,10 @@ const vinoSchema = new mongoose.Schema({
     descripcion: {
         type: String,
         required: [true, "La descripcion es obligatoria"],
+        trim: true
+    },
+    imatge: {
+        type: String,
         trim: true
     }
 })
