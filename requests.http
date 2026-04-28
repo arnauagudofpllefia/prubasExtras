@@ -20,12 +20,12 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "frank@test.com",
+  "email": "Cervezero@test.com",
   "password": "password123"
 }
 
 ### GET - Ver perfil (requiere token)
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YTczNDZlYTI4MDhmYjZmMDI1NzM3MSIsImlhdCI6MTc3MjU2NTY4NywiZXhwIjoxNzczMTcwNDg3fQ.6NP6j8Bn1P5-GnXDjsBuCHKcJsM_YyHgq6DrWpTN3rY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjA2ZTExNTRlYjVlNzUzODE0MGRiNiIsImlhdCI6MTc3NzM2NDUzMiwiZXhwIjoxNzc3OTY5MzMyfQ._W8OZJE_yEHDMpD_mOmY5BLwrNMa8feuyzcKSo0z8to
 GET {{baseUrl}}/api/auth/perfil
 Authorization: Bearer {{token}}
 
