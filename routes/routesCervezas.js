@@ -12,17 +12,14 @@ import {
 
 const router = express.Router();
 
-// Primer middleware: totes les rutes requereixen token vàlid (req.usuari definit)
-router.use(protegir);
-router.use(autoritzar('admin'));
+// GET: qualsevol usuari autenticat
+router.get('/', protegir, getCervezas);
+router.get('/:id', protegir, getCervezaById);
 
-// CRUD complet: només rol 'admin'
-router.get('/', getCervezas);
-router.get('/:id', getCervezaById);
-
-router.post('/', upload.single('imatge'), createCerveza);
-router.put('/:id', updateCerveza);
-router.delete('/:id', deleteCerveza);
-router.patch('/:id/imatge', upload.single('imatge'), updateCervezaWithImage);
+// POST, PUT, DELETE, PATCH: només rol 'admin'
+router.post('/', protegir, autoritzar('admin'), upload.single('imatge'), createCerveza);
+router.put('/:id', protegir, autoritzar('admin'), updateCerveza);
+router.delete('/:id', protegir, autoritzar('admin'), deleteCerveza);
+router.patch('/:id/imatge', protegir, autoritzar('admin'), upload.single('imatge'), updateCervezaWithImage);
 
 export default router;

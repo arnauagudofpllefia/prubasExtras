@@ -12,17 +12,14 @@ import {
 
 const routerVino = express.Router();
 
-// Llistar vins és públic
-routerVino.get("/", getVinosAll);
+// GET: qualsevol usuari autenticat
+routerVino.get("/", protegir, getVinosAll);
+routerVino.get("/:id", protegir, getVinosById);
 
-// La resta del CRUD és només per admin autenticat
-routerVino.use(protegir);
-routerVino.use(autoritzar('admin'));
-routerVino.get("/:id", getVinosById);
-
-routerVino.post("/", upload.single('imatge'), createVino);
-routerVino.put("/:id", updateVino);
-routerVino.delete("/:id", deleteVino);
-routerVino.patch("/:id/imatge", upload.single('imatge'), updateVinoWithImage);
+// POST, PUT, DELETE, PATCH: només rol 'admin'
+routerVino.post("/", protegir, autoritzar('admin'), upload.single('imatge'), createVino);
+routerVino.put("/:id", protegir, autoritzar('admin'), updateVino);
+routerVino.delete("/:id", protegir, autoritzar('admin'), deleteVino);
+routerVino.patch("/:id/imatge", protegir, autoritzar('admin'), upload.single('imatge'), updateVinoWithImage);
 
 export default routerVino;

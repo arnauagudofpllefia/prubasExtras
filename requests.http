@@ -1,7 +1,7 @@
 ### BASE URL
 @baseUrl = http://localhost:3001
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2E0ODAxNzk4OTczMDBlNTZiZiIsImlhdCI6MTc3NjE1NzEyNywiZXhwIjoxNzc2NzYxOTI3fQ.yLJrL94pzQG3h9wZQ1aRtHh0nAwnJiWD3z0_1RNofUo
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQxM2MxMmU5MmFmMTdhMTExZmU1YSIsImlhdCI6MTc3NjA5NjMwMSwiZXhwIjoxNzc2NzAxMTAxfQ.pBxjYmnccL5vFifIeaXALVb4-BmHUHreY0xm7tsif4I
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjA3MDIzM2ZhZTRiOTA4Zjc0YzU3NiIsImlhdCI6MTc3NzM2NTA2MCwiZXhwIjoxNzc3OTY5ODYwfQ.9a0SbMs0Dz3g6c9vXhzxi8Rs7ERmwpom0AHwrT2FTHQ
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjA3MDIzM2ZhZTRiOTA4Zjc0YzU3NiIsImlhdCI6MTc3NzM2NTA2MCwiZXhwIjoxNzc3OTY5ODYwfQ.9a0SbMs0Dz3g6c9vXhzxi8Rs7ERmwpom0AHwrT2FTHQ
 @userId = REEMPLAZA_CON_ID_USUARIO
 @cervezaId = REEMPLAZA_CON_ID_CERVEZA
 @vinoId = REEMPLAZA_CON_ID_VINO
@@ -18,7 +18,7 @@ Content-Type: multipart/form-data; boundary=----AstroBoundary
 ------AstroBoundary
 Content-Disposition: form-data; name="email"
 
-usuario@test.com
+cervezero@test.com
 ------AstroBoundary
 Content-Disposition: form-data; name="password"
 
@@ -54,7 +54,7 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "usuario@test.com",
+  "email": "cervezero@test.com",
   "password": "password123"
 }
 
